@@ -1,27 +1,237 @@
 \documentclass{dcbl/challenge}
 
-\setdoctitle{Der Titel meines Dokuments}
+
+%%% -- {
+%%% --     "metastyle": "0.0.1",
+%%% --     "meta": {
+%%% --          "uuid": "92e5a3bc-4da7-4fde-89f8-5c8fe911c1e1",
+%%% --          "title": "First Steps with VHDL",
+%%% --          "language": "en",
+%%% --          "authors": [
+%%% --              {
+%%% --                  "name": "Stephan Bökelmann",
+%%% --                  "email": "sboekelmann@ep1.rub.de",
+%%% --                  "affiliation": "AG Physik der Hadronen und Kerne"
+%%% --              },
+%%% --              {
+%%% --                  "name": "Tabea Röthemeyer",
+%%% --                  "email": "tabea.roethemeyer@gruppe.ai",
+%%% --                  "affiliation": "Auto-Intern GmbH"
+%%% --              }
+%%% --          ],
+%%% --          "depends on": {
+%%% --              "worksheet": ["92e5a3bc-4da7-4fde-89f8-5c8fe911c1e1"]
+%%% --          },
+%%% --          "recommends": [
+%%% --              {
+%%% --                  "type": "website",
+%%% --                  "title": "NANDland",
+%%% --                  "url": "www.nandland.com",
+%%% --                  "note": "A website explaining VHDL"
+%%% --              },
+%%% --              {
+%%% --                  "type": "book",
+%%% --                  "title": "VHDL-Synthese",
+%%% --                  "author": "Reichardt, J. and Schwarz, B.",
+%%% --                  "publisher": "de Gruyter",
+%%% --                  "address": "Oldenburg",
+%%% --                  "note": "A great book on VHDL",
+%%% --                  "url": "https://www.amazon.de/VHDL-Synthese-Entwurf-digitaler-Schaltungen-Systeme/dp/3486581929",
+%%% --                  "ISBN": "978-3486581928"
+%%% --              }
+%%% --          ],
+%%% --          },
+%%% --          "tags": {
+%%% --              "primary": ["VHSIC", "IEEE Std 1076-1987"],
+%%% --              "secondary": ["verilog"],
+%%% --              "category": ["digital-electronics"],
+%%% --         },
+%%% --     }
+%%% -- }
+
+\setdoctitle{First Steps with VHDL}
 \setdocauthor{Stephan Bökelmann}
 \setdocemail{sboekelmann@ep1.rub.de}
 \setdocinstitute{AG Physik der Hadronen und Kerne}
-
+\usepackage{listings}
 
 \begin{document}
 
-Jedes Challenge-Blatt beginnt mit einer kurzen Einleitung, die einen Kontext für den jeweiligen Zettel setzt. 
+As the complexity of digital electronics and Boolean logic increases, it becomes progressively more challenging to express ideas precisely. 
+This is particularly true in the realm of sequential logic, where Karnaugh maps (K-Maps) reach their limits. 
+To address this challenge, the VHSIC program initiated by the US Department of Defense set out to develop a precise grammar for describing digital circuits. 
+VHDL, standing for \textit{Very High Speed Integrated Circuit Hardware Description Language}, emerged as a result. 
+Despite being termed a \textit{language}, VHDL is not a programming language in the conventional sense but rather a tool for the detailed depiction of real circuits.
+Since its standardization by the IEEE in 1987, it has played a pivotal role in digital system development.
 
-\section*{Aufgaben}
-\begin{aufgabe}
-    Löse die Gleichung $x^2 - 5x + 6 = 0$.
-\end{aufgabe}
+The use of hardware description languages like VHDL enables the achievement of two primary objectives:
 
-\begin{aufgabe}[Für Fortgeschrittene]
-    Beweise den Satz des Pythagoras.
-\end{aufgabe}
-
-\section*{Anmerkungen}
 \begin{enumerate}
-    \item Link zu einem YouTube-Video: \url{https://www.youtube.com}
+    \item Simulations provide a tangible sense of how a circuit operates, which is invaluable, especially during the design phase.
+    \item Based on the VHDL description, a detailed design can be created, which is then transformable into a netlist for an actual circuit.
+\end{enumerate}
+
+This worksheet introduces the process of progressing from the idea of a digital circuit to a simulation, the results of which can be depicted in diagram form.
+
+
+
+\section*{Exercises}
+\begin{aufgabe}
+    In order for us, to see the output of our simulations as a diagram in the terminal, we need to install \textbf{VCD}.
+    Clone the repository of \textbf{VCD} which is linked in the annotations.
+    Use the provided \texttt{README.md}, to compile the project and install it.
+    Furthermore, we need an analyzer and simulator, to transform our textfile into value-change-dump (\texttt{.vcd}) file, that can be displayed.
+    Thus we need to install \textbf{GHDL} by running \texttt{sudo apt install ghdl}.
+\end{aufgabe}
+\begin{aufgabe}
+    Make a fresh directory and navigate into it. 
+    Open a new file, and call it \texttt{process.vhd}.
+    As a first step, we will not start with writing a new hardware-description, but with the syntax of describing a simulation.
+    Usually, a simulation consists of a sequence of input-values, that are being given to a circuit in a specific order with a specific timing.
+    So we want to define a sequence of values, that are being provided and displayed, but without any additional circuit connected.
+    Take a look at the following code:
+    \begin{lstlisting}[language=VHDL]
+    library IEEE;
+    use IEEE.STD_LOGIC_1164.ALL;
+
+    entity testbench1 is
+            -- definition of inputs
+            -- definition of outputs
+    end testbench1;
+
+    architecture sim of testbench is
+            signal a : STD_LOGIC := '0';
+            signal b : STD_LOGIC := '0';
+    begin
+            sim_process: process                                                                                                                          
+            begin
+                wait for 5 s;
+                a <= not a;
+                wait for 5 s;
+                b <= not b;
+                wait for 5 s;
+                a <= not a;
+            end process;
+    end sim;
+    \end{lstlisting}
+    You may also clone this code by running:\\ 
+    \hspace{5cm} \texttt{git clone} \url{git@gist.github.com:772fd1357600e207e668889fdfbc76c1.git}
+    \\The code consists of three sections:
+    \begin{enumerate}
+        \item The library declaration
+        \item The entity declaration
+        \item The architecture declaration
+    \end{enumerate}
+    The library declaration is similar to most programming languages.
+    In this case we need the \texttt{STD\_LOGIC\_1164} library, to use the \texttt{STD\_LOGIC} type, which represents a boolean value.
+    The next two sections define a black box, with its in- and outputs and a name, for this given block.
+    Since we are looking at a \textit{testbench} which doesn't get any input from the outside and doesn't send any output, the definition is basically empty. 
+    Comments in VHDL start with the a double \texttt{-} symbol.
+    A template for a block that can be filled with logic is also called an entity and has to have a unique name. 
+    The name \texttt{testbench} is a common name for such an entity without in and outputs, but it could be any string, that starts with a letter.
+    The other section defines what is happening inside of our defined block.
+    It starts with the keyword \texttt{architecture} and a name. 
+    The name \texttt{sim} is a common name for such an architecture without in and outputs, but it could be any string, that starts with a letter.
+    It needs to reference, which block it should implement, therefore it says in our code \texttt{of testbench}. 
+    Inside we start with the definition of local variables used in this block in our case, we just want to use the \texttt{a} and \texttt{b} signals.
+    The \texttt{begin} and \texttt{end} keywords are used to define the boundary of our actual implementation.
+    In an architecture, there can be multiple circuits with different names, as well as subcircuits.
+    We want to define just one circuit with the name \texttt{sim\_process} and of the type \texttt{process}.
+    \texttt{process} is a special type of block, that can only be used in a simulation. 
+    We use the operators \texttt{begin} and \texttt{end} to define the boundary of our implementation.
+    The code inside of our process should be trivial to read.
+    Save the code as \texttt{process.vhd}.
+    The compilation and simulation are now done in three separate steps:
+    \begin{enumerate}
+        \item Analyze - making sure the syntax is correct
+        \item Elaborate - compiling the code
+        \item Simulate - calculate the result
+    \end{enumerate}
+    At the end of this, we receive a \texttt{.vcd} file, which can be opened in the VCD Viewer.
+    In order to do these three steps, run the following commands:
+    \begin{lstlisting}
+    1. ghdl -a process.vhd
+    2. ghdl -e -fsynopsys testbench1
+    3. ghdl -r testbench1 --vcd=output.vcd --stop-time=25s
+    \end{lstlisting}
+    After the simulation we can take a look at the output in the \texttt{.vcd} file by running \texttt{vcd < output.vcd}.
+\end{aufgabe}
+
+\begin{aufgabe}
+    We now want to add an actual logic-block to our simulation and see how our defined logic works.
+    Start a second file and call it \texttt{and\_gate.vhd}.
+    Fill it with the following code:
+    \begin{lstlisting}[language=VHDL]
+    library IEEE;
+    use IEEE.STD_LOGIC_1164.ALL;
+    
+    entity and_gate is
+        Port (  in1 : in  STD_LOGIC;
+                in2 : in  STD_LOGIC;
+                Q : out STD_LOGIC);
+    end and_gate;
+    
+    architecture Behavioral of and_gate is
+    begin
+        Q <= in1 and in2;
+    end Behavioral;
+    \end{lstlisting}
+    We see the same pattern as in the testbench, only that our logic now has inputs and outputs, both of the data-type \texttt{STD\_LOGIC}.
+    Save the code as \texttt{and\_gate.vhd}.
+    Since this is now defined as an entity, basically the same thing as if you'd have an IC laying around, we need to add it to our actual circuit.
+    Open the \texttt{process.vhd} again and modify the \texttt{sim\_process} block in the following way:
+    \begin{lstlisting}
+    library IEEE;
+    use IEEE.STD_LOGIC_1164.ALL;
+
+    entity testbench is
+    end testbench;
+
+    architecture sim of testbench is
+            signal a : STD_LOGIC := '0';
+            signal b : STD_LOGIC := '0';
+            signal q : STD_LOGIC;
+    begin
+        uut: entity work.and_gate
+        port map(   a => in1,
+                    b => in2,
+                    q => Q);
+
+            sim_process: process
+            begin
+                    wait for 5 s;
+                    a <= not a;
+                    wait for 5 s;
+                    b <= not b;
+                    wait for 5 s;
+                    a <= not a;
+            end process;
+    end sim;
+    \end{lstlisting}
+    You may also just clone the following repository: \url{git@gist.github.com:3b49170db45ffaf8aa3d6c38fbae5fbe.git}.
+    Can you spot the changes? 
+    We added an actual instantiation of our \texttt{and\_gate} here, as well as an output to our signals. 
+    After the analyzing-step, our analyzed entity \texttt{and\_gate} will be put into a temporary library, thus we have to call it by the name \texttt{work.and\_gate}.
+    With the instantiation of our block, we have to connect the terminals of that entity to our signals inside our process.
+    We do that by saying \texttt{a => in1}, which means, our signal \texttt{a} is connected to the terminal \texttt{in1} of our entity.
+    Now we need to simulate our code again, by analyzing, elaborating and running it again to generate a \texttt{.vcd} file.
+    \begin{lstlisting}
+    1. ghdl -a and_gate.vhd
+    2. ghdl -a process.vhd
+    3. ghdl -e -fsynopsys testbench
+    4. ghdl -r testbench --vcd=output.vcd --stop-time=25s
+    5. vcd < output.vcd
+    \end{lstlisting}
+\end{aufgabe}
+
+\begin{aufgabe}
+    In the final example of this worksheet, clone the following code, and explain what it does: \url{git@gist.github.com:56a39b44311535a8b2fec3b29763e57d.git}.
+    Try running the simulation again.
+\end{aufgabe}
+
+\section*{Annotations}
+\begin{enumerate}
+    \item VCD Command Line Viewer: \url{https://github.com/yne/vcd}
 \end{enumerate}
 
 \end{document}
